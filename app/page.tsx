@@ -4,7 +4,7 @@ import Login from "./presentation/screens/Login";
 
 export default function Home() {
   return (
-    <RootLayout>
+    <RootLayout types={undefined}>
       <Login />
     </RootLayout>
   );

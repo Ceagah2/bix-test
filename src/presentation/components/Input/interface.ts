@@ -1,6 +1,6 @@
 export interface InputProps {
   type: string;
   placeholder: string;
-  register: unknown;
+  register: () => object;
   error?: string;
 }

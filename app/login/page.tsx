@@ -5,6 +5,7 @@ import Carousel from "@src/presentation/components/Carousel";
 import Input from "@src/presentation/components/Input";
 import loginSchema from "@src/validation/loginSchema";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { FormData } from "./interface";
 import * as S from "./styles";
@@ -19,7 +20,21 @@ export default function Login() {
   });
 
   const handleLogin = (data: FormData) => {
-    console.log("Logging in...", data);
+    const storedUser = localStorage.getItem("userAccount");
+    if (!storedUser) {
+      alert("Você não tem uma conta. Por favor, crie uma conta primeiro, clicando em Crie uma conta aqui.");
+      return;
+    }
+    const userAccount = JSON.parse(storedUser);
+    if (
+      data.email === userAccount.email &&
+      data.password === userAccount.password
+    ) {
+      localStorage.setItem("isLoggedIn", "true");
+      redirect("/dashboard");
+    } else {
+      alert("Email ou senha incorretos. Tente novamente.");
+    }
   };
 
   return (

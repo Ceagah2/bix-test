@@ -1,6 +1,10 @@
+
+import { UseFormRegisterReturn } from "react-hook-form";
+
 export interface InputProps {
   type: string;
   placeholder: string;
-  register: () => object;
+  register: UseFormRegisterReturn<string>;
   error?: string;
 }
+

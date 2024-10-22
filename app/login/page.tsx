@@ -4,13 +4,12 @@ import Button from "@src/presentation/components/Button";
 import Carousel from "@src/presentation/components/Carousel";
 import Input from "@src/presentation/components/Input";
 import loginSchema from "@src/validation/loginSchema";
-import Link from 'next/link';
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { FormData } from "./interface";
 import * as S from "./styles";
 
 export default function Login() {
-
   const {
     register,
     handleSubmit,
@@ -47,12 +46,10 @@ export default function Login() {
           error={errors.password?.message}
         />
 
-        <Button type="submit" disabled={!register("email") || !register("password")}>
-          Entrar
-        </Button>
+        <Button type="submit">Entrar</Button>
 
         <S.RegisterLink>
-          Não tem conta? <Link href="/signup">Crie uma conta aqui </Link>
+          Não tem conta? <Link href="/signup">Crie uma conta aqui</Link>
         </S.RegisterLink>
       </S.LoginForm>
     </S.LoginContainer>

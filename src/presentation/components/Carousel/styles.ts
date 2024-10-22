@@ -1,5 +1,5 @@
-import { colors } from "@/presentation/theme/colors";
 import styled from "styled-components";
+import { colors } from "../../theme/colors";
 
 export const CarouselContainer = styled.div`
   position: relative;

@@ -1,10 +1,10 @@
 'use-client'
 import RootLayout from "./layout";
-import Login from "./presentation/screens/Login";
+import Login from "./login/page";
 
 export default function Home() {
   return (
-    <RootLayout types={undefined}>
+    <RootLayout>
       <Login />
     </RootLayout>
   );

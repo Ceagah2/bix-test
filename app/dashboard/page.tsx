@@ -32,7 +32,7 @@ export default function Dashboard() {
       {isLoading ? (
         <S.LoaderContainer>
           <CircularProgress color="secondary" />
-          <S.LoaderText>Retrieving data...</S.LoaderText>
+          <S.LoaderText>Carregando informações...</S.LoaderText>
         </S.LoaderContainer>
       ) : (
         <h1>Bem-vindo ao Dashboard!</h1>

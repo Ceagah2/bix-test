@@ -46,14 +46,16 @@ export default function Signup() {
         <Input
           type="text"
           placeholder="Nome"
-          register={register("name")}
+          register={() => register("name")}
+          name={"name"}
           error={errors.name?.message}
         />
 
         <Input
           type="email"
           placeholder="Email"
-          register={register("email")}
+          register={() => register("email")}
+          name={"email"}
           error={errors.email?.message}
         />
 
@@ -61,7 +63,8 @@ export default function Signup() {
           <Input
             type={showPassword ? "text" : "password"}
             placeholder="Senha"
-            register={register("password")}
+            register={() => register("password")}
+            name={"password"}
             error={errors.password?.message}
           />
           <S.Icon onClick={() => setShowPassword(!showPassword)}>
@@ -77,7 +80,8 @@ export default function Signup() {
           <Input
             type={showConfirmPassword ? "text" : "password"}
             placeholder="Confirme a Senha"
-            register={register("confirmPassword")}
+            register={() => register("confirmPassword")}
+            name={"confirmPassword"}
             error={errors.confirmPassword?.message}
           />
           <S.Icon onClick={() => setShowConfirmPassword(!showConfirmPassword)}>

@@ -15,6 +15,6 @@ export const registerSchema = yup.object().shape({
     .required("A senha é obrigatória"),
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref("password"), null], "As senhas precisam ser iguais")
+    .oneOf([yup.ref("password")], "As senhas precisam ser iguais")
     .required("A confirmação de senha é obrigatória"),
 });

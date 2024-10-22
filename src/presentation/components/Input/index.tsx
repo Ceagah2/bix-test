@@ -1,20 +1,21 @@
-import { FieldValues } from "react-hook-form";
 import { InputProps } from "./interface";
 import * as S from "./styles";
 
-const Input = <T extends FieldValues,>({
+const Input = ({
   type,
   placeholder,
   register,
   name,
   error,
-}: InputProps<T>) => {
+}: InputProps) => {
   return (
     <S.InputWrapper>
       <S.InputStyled
         type={type}
         placeholder={placeholder}
-        {...register(name)}
+        {...register(name)} 
+        {...register} 
+        name={name}
       />
       {error && <S.ErrorMessage>{error}</S.ErrorMessage>}
     </S.InputWrapper>

@@ -36,13 +36,16 @@ export default function Login() {
         <Input
           type="email"
           placeholder="Email"
-          register={register("email")}
+          register={() => register("email")}
+          name="email"
           error={errors.email?.message}
         />
+
         <Input
           type="password"
           placeholder="Senha"
-          register={register("password")}
+          register={() => register("password")}
+          name="password"
           error={errors.password?.message}
         />
 

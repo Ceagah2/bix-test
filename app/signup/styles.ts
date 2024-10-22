@@ -5,7 +5,18 @@ import styled from "styled-components";
 
 export const RegisterContainer = styled.div`
   display: flex;
+  flex-direction: row;
   height: 100vh;
+
+  @media (max-width: 1110px) {
+    flex-direction: column;
+  }
+
+  @media (max-width: 768px) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 export const CarouselWrapper = styled.div`
@@ -13,10 +24,13 @@ export const CarouselWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  @media (max-width: 768px) {
+    height: 50%; 
+  }
 `;
 
 export const RegisterForm = styled.form`
- width: 30%; 
+  width: 30%;
   background: rgba(255, 255, 255, 0.9);
   padding: 2rem;
   border-radius: 8px;
@@ -24,24 +38,35 @@ export const RegisterForm = styled.form`
   text-align: center;
   display: flex;
   flex-direction: column;
-  justify-content: center; 
-  height: 100%;
+  justify-content: center;
+  height: auto;
   gap: 8px;
+
+  @media (max-width: 1110px) {
+    width: 100%;
+    height: 100%;
+    padding: 1.5rem;
+  }
 `;
 
 export const Header = styled.div`
   width: 100%;
-  height: 300px;
+  height: auto; 
   display: flex;
   align-items: center;
   justify-content: space-around;
   flex-direction: column;
-`
+`;
+
 export const Title = styled.h2`
   text-align: center;
   font-family: ${fonts.title};
   color: ${colors.gray[900]};
   font-size: ${sizes.subheading};
+
+  @media (max-width: 768px) {
+    font-size: 1.5em; 
+  }
 `;
 
 export const SubTitle = styled.span`
@@ -49,6 +74,10 @@ export const SubTitle = styled.span`
   font-family: ${fonts.body};
   font-size: ${sizes.text};
   text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 1em; 
+  }
 `;
 
 export const RegisterButton = styled.button`
@@ -70,7 +99,6 @@ export const ErrorMessage = styled.span`
   font-size: 14px;
   margin-top: -10px;
 `;
-
 
 export const Input = styled.input`
   padding: 10px;

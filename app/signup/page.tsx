@@ -4,7 +4,7 @@ import Button from "@src/presentation/components/Button";
 import Carousel from "@src/presentation/components/Carousel";
 import Input from "@src/presentation/components/Input";
 import { registerSchema } from "@src/validation/signinSchema";
-import { redirect } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -14,6 +14,7 @@ import * as S from "./styles";
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const router = useRouter();
 
   const {
     register,
@@ -94,6 +95,7 @@ export default function Signup() {
         </S.PasswordWrapper>
 
         <Button type="submit">Criar conta</Button>
+        <Button onClick={() => router.push("/")}>Voltar</Button>
       </S.RegisterForm>
     </S.RegisterContainer>
   );

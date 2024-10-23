@@ -1,11 +1,13 @@
 "use client";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { CircularProgress } from "@mui/material";
 import Button from "@src/presentation/components/Button";
 import Carousel from "@src/presentation/components/Carousel";
 import Input from "@src/presentation/components/Input";
 import loginSchema from "@src/validation/loginSchema";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FormData } from "./interface";
 import * as S from "./styles";
@@ -18,8 +20,11 @@ export default function Login() {
   } = useForm<FormData>({
     resolver: yupResolver(loginSchema),
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
   const router = useRouter();
   const handleLogin = (data: FormData) => {
+    setIsLoading(true);
     const storedUser = localStorage.getItem("userAccount");
     if (!storedUser) {
       alert("Você não tem uma conta. Por favor, crie uma conta primeiro, clicando em Crie uma conta aqui.");
@@ -32,8 +37,10 @@ export default function Login() {
     ) {
       localStorage.setItem("isLoggedIn", "true");
       router.push("/dashboard")
+      setIsLoading(false);
     } else {
       alert("Email ou senha incorretos. Tente novamente.");
+      setIsLoading(false);
     }
   };
 
@@ -64,7 +71,7 @@ export default function Login() {
           error={errors.password?.message}
         />
 
-        <Button type="submit">Entrar</Button>
+        <Button type="submit">{isLoading ? <CircularProgress color="secondary" /> : "Entrar"}</Button>
 
         <S.RegisterLink>
           Não tem conta? <Link href="/signup">Crie uma conta aqui</Link>

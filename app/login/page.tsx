@@ -5,7 +5,7 @@ import Carousel from "@src/presentation/components/Carousel";
 import Input from "@src/presentation/components/Input";
 import loginSchema from "@src/validation/loginSchema";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { FormData } from "./interface";
 import * as S from "./styles";
@@ -18,7 +18,7 @@ export default function Login() {
   } = useForm<FormData>({
     resolver: yupResolver(loginSchema),
   });
-
+  const router = useRouter();
   const handleLogin = (data: FormData) => {
     const storedUser = localStorage.getItem("userAccount");
     if (!storedUser) {
@@ -31,7 +31,7 @@ export default function Login() {
       data.password === userAccount.password
     ) {
       localStorage.setItem("isLoggedIn", "true");
-      redirect("/dashboard");
+      router.push("/dashboard")
     } else {
       alert("Email ou senha incorretos. Tente novamente.");
     }

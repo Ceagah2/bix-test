@@ -4,7 +4,7 @@ import Button from "@src/presentation/components/Button";
 import Carousel from "@src/presentation/components/Carousel";
 import Input from "@src/presentation/components/Input";
 import { registerSchema } from "@src/validation/signinSchema";
-import { redirect, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -25,9 +25,9 @@ export default function Signup() {
   });
 
   const onSubmit = (data: RegisterFormInputs) => {
+    router.push("/");
     alert("Conta criada com sucesso!");
     localStorage.setItem("userAccount", JSON.stringify(data));
-    redirect("/");
   };
 
   return (

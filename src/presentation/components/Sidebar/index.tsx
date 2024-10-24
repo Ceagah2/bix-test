@@ -50,7 +50,7 @@ export default function SideBar() {
 
   return (
     <>
-      <Toolbar style={{ justifyContent: "start", paddingLeft: "16px" }}>
+      <Toolbar style={{ position: "absolute", top: 0, left: 0 }}>
         <IconButton
           edge="start"
           color="inherit"
@@ -68,14 +68,17 @@ export default function SideBar() {
         </S.ProfileContainer>
 
         <List>
-          <ListItem onClick={() => router.push("/dashboard")}>
+          <ListItem
+            onClick={() => router.push("/dashboard")}
+            sx={{ cursor: "pointer" }}
+          >
             <ListItemIcon>
               <HomeIcon />
             </ListItemIcon>
             <ListItemText primary="Home" />
           </ListItem>
 
-          <ListItem onClick={handleLogout}>
+          <ListItem onClick={handleLogout} sx={{ cursor: "pointer" }}>
             <ListItemIcon>
               <LogoutIcon />
             </ListItemIcon>

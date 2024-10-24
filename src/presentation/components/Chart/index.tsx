@@ -21,7 +21,6 @@ ChartJS.register(
   Legend
 );
 
-
 const formatDate = (timestamp: number) => {
   const date = new Date(timestamp);
   return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
@@ -55,6 +54,7 @@ const TransactionChart: React.FC<ITransactionChartProps> = ({
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false, // Para permitir o ajuste do gráfico em proporção ao contêiner
     plugins: {
       legend: {
         position: "top" as const,
@@ -77,13 +77,20 @@ const TransactionChart: React.FC<ITransactionChartProps> = ({
       default:
         return type;
     }
-  }
+  };
+
   return (
-    <Box sx={{ width: "50%", height: "50%", margin: "auto" }}>
-      <Typography variant="h5">
+    <Box
+      sx={{
+        width: { xs: "300px", sm: "400px", md: "80%" },
+        height: { xs: "250px", sm: "300px", md: "600px" },
+        marginBottom: { xs: "0", sm: "20", md: "20" },
+      }}
+    >
+      <Typography variant="h5" textAlign="center" marginBottom={2}>
         Gráfico de Transações - {translateType(transactionType)}
       </Typography>
-      <Bar data={data} options={options} />
+      <Bar data={data} options={options} height={undefined} width={undefined} />
     </Box>
   );
 };

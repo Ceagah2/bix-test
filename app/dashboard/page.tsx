@@ -41,6 +41,7 @@ export default function Dashboard() {
     endDate: new Date().toISOString().split("T")[0],
     state: "",
     industry: "",
+    account: ""
   });
 
   const router = useRouter();
@@ -131,6 +132,7 @@ export default function Dashboard() {
       endDate: new Date().toISOString().split("T")[0],
       industry: "",
       state: "",
+      account: ""
     });
     setTransactions(allTransactions);
   };
@@ -202,7 +204,7 @@ export default function Dashboard() {
               color: "white",
               marginTop: "8px",
               borderRadius: "8px",
-              marginLeft: '40px'
+              marginLeft: "40px",
             }}
           >
             <Typography variant="h4" gutterBottom>
@@ -295,6 +297,15 @@ export default function Dashboard() {
                 onChange={handleFilterChange}
               />
             </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                fullWidth
+                name="account"
+                placeholder="Conta"
+                value={filters.account}
+                onChange={handleFilterChange}
+              />
+            </Grid>
 
             <Grid item xs={6} sm={4}>
               <Button
@@ -321,8 +332,8 @@ export default function Dashboard() {
               flexDirection: "column",
               justifyContent: "space-between",
               alignItems: "center",
-              width: { xs: "100%", sm: "60%", md: "40%", lg: "20%" }, 
-              padding: { xs: 1, sm: 2 }, 
+              width: { xs: "100%", sm: "60%", md: "40%", lg: "20%" },
+              padding: { xs: 1, sm: 2 },
               marginBottom: 2,
             }}
           >
@@ -330,7 +341,7 @@ export default function Dashboard() {
               variant="h5"
               sx={{
                 marginBottom: 1,
-                textAlign: "center", 
+                textAlign: "center",
               }}
             >
               Últimas 5 transações
@@ -353,9 +364,9 @@ export default function Dashboard() {
                     borderRadius: "8px",
                     marginBottom: "8px",
                     paddingLeft: "8px",
-                    paddingRight: "8px", 
-                    flexDirection: { xs: "column", sm: "row" }, 
-                    alignItems: { xs: "flex-start", sm: "center" }, 
+                    paddingRight: "8px",
+                    flexDirection: { xs: "column", sm: "row" },
+                    alignItems: { xs: "flex-start", sm: "center" },
                   }}
                 >
                   <ListItemText
@@ -363,7 +374,7 @@ export default function Dashboard() {
                     secondary={transaction.industry}
                     sx={{
                       paddingLeft: 0,
-                      width: { xs: "100%", sm: "75%" }, 
+                      width: { xs: "100%", sm: "75%" },
                       marginBottom: { xs: "8px", sm: 0 },
                       textAlign: { xs: "left", sm: "left" },
                     }}
@@ -374,7 +385,7 @@ export default function Dashboard() {
                     sx={{
                       display: "flex",
                       flexDirection: "column",
-                      alignItems: { xs: "flex-start", sm: "flex-end" }, 
+                      alignItems: { xs: "flex-start", sm: "flex-end" },
                       width: { xs: "100%", sm: "auto" },
                     }}
                   />

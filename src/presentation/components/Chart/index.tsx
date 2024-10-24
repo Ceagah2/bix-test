@@ -72,8 +72,8 @@ const TransactionChart: React.FC<ITransactionChartProps> = ({
         return "Despesas";
       case "deposit":
         return "Receitas";
-      case "pending":
-        return "Pendentes";
+      case "all":
+        return "Todas";
       default:
         return type;
     }

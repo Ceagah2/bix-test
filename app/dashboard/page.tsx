@@ -1,12 +1,14 @@
 "use client";
 import {
   Box,
+  Button,
   Container,
   Divider,
   Grid,
   List,
   ListItem,
   ListItemText,
+  TextField,
   Typography,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -15,6 +17,9 @@ import { TransactionApi } from "@src/infra/services/transactions";
 import TransactionChart from "@src/presentation/components/Chart";
 import SideBar from "@src/presentation/components/Sidebar";
 import { TransactionCard } from "@src/presentation/components/TransactionCard";
+import dayjs from "dayjs";
+import "dayjs/locale/br";
+import advancedFormat from 'dayjs/plugin/advancedFormat';
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import * as S from "./styles";
@@ -24,23 +29,40 @@ export default function Dashboard() {
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const [userName, setUserName] = useState<string>("");
   const [transactionType, setTransactionType] = useState<string>("deposit");
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [allTransactions, setAllTransactions] = useState<ITransaction[]>([]);
+
+ const [filters, setFilters] = useState({
+   startDate: new Date(),
+   endDate: new Date(),
+   state: "",
+   industry: "",
+ });
 
   const router = useRouter();
+  dayjs.extend(advancedFormat);
 
-  useEffect(() => {
-    const userAccount = JSON.parse(localStorage.getItem("userAccount") || "{}");
-    if (!userAccount) {
-      router.push("/");
-    } else {
-      loadData();
-      setUserName(userAccount?.name || "Usuário");
-    }
-  }, [router]);
+ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+   const { name, value } = e.target;
+
+   if (name === "startDate") {
+     setStartDate(value ? new Date(value) : null);
+   }
+
+   if (name === "endDate") {
+     setEndDate(value ? new Date(value) : null);
+   }
+
+   setFilters({ ...filters, [name as string]: value });
+ };
+
 
   const loadData = async () => {
     const transactionApi = new TransactionApi();
-    const allTransactions = await transactionApi.fetchAllTransactions();
-    setTransactions(allTransactions);
+    const fetchedTransactions = await transactionApi.fetchAllTransactions();
+    setTransactions(fetchedTransactions);
+    setAllTransactions(fetchedTransactions); 
     setIsLoading(false);
   };
 
@@ -52,7 +74,6 @@ export default function Dashboard() {
     const totalExpenses = transactions
       .filter((t) => t.transaction_type === "withdraw")
       .reduce((acc, t) => acc + parseFloat(t.amount), 0);
-  
 
     const totalBalance = totalIncome - totalExpenses;
 
@@ -63,15 +84,26 @@ export default function Dashboard() {
     setTransactionType(type);
   };
 
-  const getLastFiveTransactions = (
-    transactions: ITransaction[],
-    type: string
-  ) => {
+  const handleDateFilter = (transactions: ITransaction[]) => {
     return transactions
-      .filter((transaction) => transaction.transaction_type === type)
-      .sort((a, b) => b.date - a.date) 
-      .slice(0, 5); 
+    .filter((transaction) => {
+      const transactionDate = dayjs(transaction.date);
+      const isWithinDateRange =
+        (!startDate ||
+          transactionDate.isAfter(dayjs(filters.startDate))) &&
+        (!endDate ||
+          transactionDate.isBefore(dayjs(filters.endDate)));
+
+      const isMatchingState =
+        !filters.state || transaction.state.toLowerCase().includes(filters.state.toLowerCase());
+      const isMatchingIndustry =
+        !filters.industry || transaction.industry.toLowerCase().includes(filters.industry.toLowerCase());
+
+      return isWithinDateRange && isMatchingState && isMatchingIndustry;
+    })
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   };
+
   const formatCurrencyBRL = (amount: number) => {
     return amount.toLocaleString("pt-BR", {
       style: "currency",
@@ -89,17 +121,57 @@ export default function Dashboard() {
         return type;
     }
   };
+
+  const applyFilters = () => {
+    const filteredTransactions = handleDateFilter(allTransactions);
+    setTransactions(filteredTransactions);
+  };
+  
+  const clearFilters = () => {
+    setFilters({
+      startDate: new Date(),
+      endDate: new Date(),
+      industry: "",
+      state: "",
+    });
+      setTransactions(allTransactions);
+  };
+
   const totals = calculateTotals(transactions);
+   const getLastFiveTransactions = (
+     transactions: ITransaction[],
+     type: string
+   ) => {
+     const filteredTransactions = handleDateFilter(
+       transactions.filter(
+         (transaction) => transaction.transaction_type === type
+       )
+     );
+
+     return filteredTransactions.sort((a, b) => b.date - a.date).slice(0, 5);
+   };
   const lastFiveTransactions = getLastFiveTransactions(
     transactions,
     transactionType
   );
+  
+ useEffect(() => {
+   const userAccount = JSON.parse(localStorage.getItem("userAccount") || "{}");
+   if (!userAccount) {
+     router.push("/");
+   } else {
+     loadData();
+     setUserName(userAccount?.name || "Usuário");
+   }
+ }, [router]);
+
 
   return (
     <Container
       maxWidth={false}
       style={{
-        height: "100vh",
+        minHeight: "100vh",
+        height: "100%",
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
@@ -115,7 +187,7 @@ export default function Dashboard() {
           <S.LoaderText>Carregando informações...</S.LoaderText>
         </S.LoaderContainer>
       ) : (
-        <>
+        <Grid>
           <Box
             sx={{
               width: "100%",
@@ -132,9 +204,6 @@ export default function Dashboard() {
             </Typography>
           </Box>
 
-          <Typography variant="h5" gutterBottom style={{ marginTop: "20px" }}>
-            Filtros
-          </Typography>
           <Grid container spacing={3} sx={{ padding: 2 }}>
             <Grid
               item
@@ -164,7 +233,6 @@ export default function Dashboard() {
               />
             </Grid>
 
-
             <Grid item xs={12} sm={6} md={3}>
               <TransactionCard
                 title="Saldo Total"
@@ -172,13 +240,94 @@ export default function Dashboard() {
               />
             </Grid>
           </Grid>
+
+          <Typography variant="h5" gutterBottom style={{ marginTop: "20px" }}>
+            Filtros
+          </Typography>
+          <Grid container spacing={3} sx={{ padding: 2 }}>
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                fullWidth
+                name="startDate"
+                label="Data Inicial"
+                type="date"
+                value={filters.startDate}
+                onChange={handleFilterChange}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                fullWidth
+                name="endDate"
+                label="Data Final"
+                type="date"
+                value={filters.endDate}
+                onChange={handleFilterChange}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                fullWidth
+                type="text"
+                placeholder="Indústria"
+                value={filters.industry}
+                onChange={(e) =>
+                  setFilters({ ...filters, industry: e.target.value })
+                }
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                fullWidth
+                type="text"
+                placeholder="Estado"
+                value={filters.state}
+                onChange={(e) =>
+                  setFilters({ ...filters, state: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid container spacing={3} sx={{ padding: 2 }}>
+              <Grid item xs={6} sm={4}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => applyFilters()}
+                >
+                  Aplicar Filtros
+                </Button>
+              </Grid>
+
+              <Grid item xs={6} sm={4}>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => clearFilters()}
+                >
+                  Limpar Filtros
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
           <Typography variant="h6" gutterBottom style={{ marginTop: "20px" }}>
             Últimas 5 transações ({translateType(transactionType)})
           </Typography>
-          <List style={{ display: "flex", flexDirection: "row", width: "100vw", justifyContent:'space-around' }}>
+          <List
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              width: "100vw",
+              justifyContent: "space-around",
+            }}
+          >
             {lastFiveTransactions.map((transaction) => (
               <div key={transaction.date}>
-                <ListItem style={{border: '1px solid #ccc', borderRadius: '8px'}}>
+                <ListItem
+                  style={{ border: "1px solid #ccc", borderRadius: "8px" }}
+                >
                   <ListItemText
                     primary={`Valor: ${formatCurrencyBRL(
                       parseFloat(transaction.amount)
@@ -195,10 +344,10 @@ export default function Dashboard() {
             ))}
           </List>
           <TransactionChart
-            transactions={transactions}
+            transactions={handleDateFilter(transactions)}
             transactionType={transactionType}
           />
-        </>
+        </Grid>
       )}
     </Container>
   );

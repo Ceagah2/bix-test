@@ -157,15 +157,20 @@ export default function Dashboard() {
     transactionType
   );
 
-  useEffect(() => {
-    const userAccount = JSON.parse(localStorage.getItem("userAccount") || "{}");
-    if (!userAccount) {
-      router.push("/");
-    } else {
-      loadData();
-      setUserName(userAccount?.name || "Usuário");
-    }
-  }, [router]);
+ useEffect(() => {
+   const userAccount = localStorage.getItem("userAccount");
+   if (userAccount === null) {
+     router.push("/");
+   } else {
+     const parsedUserAccount = JSON.parse(userAccount);
+     if (!parsedUserAccount) {
+       router.push("/");
+     } else {
+       loadData();
+       setUserName(parsedUserAccount?.name || "Usuário");
+     }
+   }
+ }, [router]);
 
   return (
     <Container
